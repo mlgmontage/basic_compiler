@@ -35,10 +35,24 @@ parse = (tokens) => {
 
 // generator
 
+generate = (tree) => {
+  let code = [];
+
+  while (tree.length > 0) {
+    let current = tree.shift();
+    code.push(
+      `\t<div class="box ${current.operation}"> ${current.value}</div>\n`
+    );
+  }
+  return `<div>\n${code.join("")}</div>`;
+};
+
 const thread = "red 8 green 7 blue 3";
 const stream_of_tokens = tokenize(thread);
 const parse_tree = parse(stream_of_tokens);
+const code = generate(parse_tree);
 
 console.log(thread);
 console.log(tokenize(thread));
-console.log(parse_tree);
+console.log(parse(tokenize(thread)));
+console.log(generate(parse(tokenize(thread))));

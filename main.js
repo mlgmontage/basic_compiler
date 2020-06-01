@@ -47,10 +47,13 @@ generate = (tree) => {
   return `<div>\n${code.join("")}</div>`;
 };
 
-const thread = "red 8 green 7 blue 3";
+const thread = "red 8 green 7 blue 3 red 5 green 8 blue 0";
 const stream_of_tokens = tokenize(thread);
 const parse_tree = parse(stream_of_tokens);
 const code = generate(parse_tree);
+
+const container = document.getElementById("container");
+container.innerHTML = code;
 
 console.log(thread);
 console.log(tokenize(thread));

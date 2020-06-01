@@ -1,3 +1,10 @@
+/**
+ * Basic simple compiler
+ * operation value
+ * [word] [number]
+ * <div class="box [word]">[number]</div>
+ */
+
 // lexer
 tokenize = (thread) => {
   const tokens = thread
@@ -52,7 +59,29 @@ const stream_of_tokens = tokenize(thread);
 const parse_tree = parse(stream_of_tokens);
 const code = generate(parse_tree);
 
+// DOM element
 const container = document.getElementById("container");
+const tokens_elem = document.getElementById("token");
+const parsing_tree_elem = document.getElementById("parse_tree");
+const code_elem = document.getElementById("code");
+
+tokens_elem.innerHTML = tokenize(thread)
+  .map((token) => {
+    return `<span class="word">${token.type}: </span> <span>${token.value}</span><br>`;
+  })
+  .join("");
+
+parsing_tree_elem.innerHTML = parse(tokenize(thread))
+  .map((expression) => {
+    return `<span class="word">${expression.operation}</span>
+    <span class="number">${expression.value}</span><br>`;
+  })
+  .join("");
+
+code_elem.innerHTML = `<pre>${code
+  .replace(/>/gi, "&gt")
+  .replace(/</gi, "&lt")}</pre>`;
+
 container.innerHTML = code;
 
 console.log(thread);

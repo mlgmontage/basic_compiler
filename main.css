@@ -8,8 +8,6 @@ body {
 }
 
 .box {
-  width: 100px;
-  height: 100px;
   font-size: 48px;
   display: inline-block;
   text-align: center;

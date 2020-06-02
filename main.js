@@ -1,8 +1,8 @@
 /**
  * Basic simple compiler
  * operation value
- * [word] [number]
- * <div class="box [word]">[number]</div>
+ * [word] [number] [width] [height]
+ * <div class="box [word]" style="width: [width]; height: [height]">[number]</div>
  */
 
 // lexer
@@ -21,21 +21,42 @@ tokenize = (thread) => {
 // parser
 parse = (tokens) => {
   const AST = [];
+  let operation;
+  let content;
+  let width;
+  let height;
 
   while (tokens.length > 0) {
-    let current_op = tokens.shift();
+    operation = tokens.shift();
 
-    if (current_op.type === "word") {
-      current_val = tokens.shift();
-
-      if (current_val.type === "number") {
+    if (operation.type === "word") {
+      content = tokens.shift();
+      if (content.type === "number") {
       } else {
-        throw Error("argument have to be number");
+        throw Error("missing content argument");
+      }
+
+      width = tokens.shift();
+      if (width.type === "number") {
+      } else {
+        throw Error("missing width argument");
+      }
+
+      height = tokens.shift();
+      if (height.type === "number") {
+      } else {
+        throw Error("missing height argument");
       }
     } else {
-      throw Error("Code have to start with operation");
+      Error("Code have to start with operation");
     }
-    AST.push({ operation: current_op.value, value: current_val.value });
+
+    AST.push({
+      operation: operation.value,
+      content: content.value,
+      width: width.value,
+      height: height.value,
+    });
   }
   return AST;
 };
@@ -48,13 +69,14 @@ generate = (tree) => {
   while (tree.length > 0) {
     let current = tree.shift();
     code.push(
-      `\t<div class="box ${current.operation}"> ${current.value}</div>\n`
+      `\t<div class="box ${current.operation}" style="width: ${current.width}px; height: ${current.height}px;"> ${current.content}</div>\n`
     );
   }
   return `<div>\n${code.join("")}</div>`;
 };
 
-const thread = "red 8 green 7 blue 3 red 5 green 8 blue 0";
+const thread = "red 8 100 100 green 7 100 200 blue 3 50 50";
+// const thread = "red 8 100 100";
 const stream_of_tokens = tokenize(thread);
 const parse_tree = parse(stream_of_tokens);
 const code = generate(parse_tree);
@@ -74,7 +96,10 @@ tokens_elem.innerHTML = tokenize(thread)
 parsing_tree_elem.innerHTML = parse(tokenize(thread))
   .map((expression) => {
     return `<span class="word">${expression.operation}</span>
-    <span class="number">${expression.value}</span><br>`;
+    <span class="number">${expression.content}</span>
+    <span class="number">${expression.width}</span>
+    <span class="number">${expression.height}</span>
+    <br>`;
   })
   .join("");
 
